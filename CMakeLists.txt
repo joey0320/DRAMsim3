@@ -89,7 +89,7 @@ set_target_properties(dramsim3 PROPERTIES
 # trace CPU, .etc
 add_executable(dramsim3main src/main.cc src/cpu.cc)
 target_link_libraries(dramsim3main PRIVATE dramsim3 args)
-target_compile_options(dramsim3main PRIVATE)
+target_compile_options(dramsim3main PRIVATE -g)
 set_target_properties(dramsim3main PROPERTIES
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED YES
