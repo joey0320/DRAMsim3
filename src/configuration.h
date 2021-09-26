@@ -28,6 +28,7 @@ enum class RefreshPolicy {
     RANK_LEVEL_SIMULTANEOUS,  // impractical due to high power requirement
     RANK_LEVEL_STAGGERED,
     BANK_LEVEL_STAGGERED,
+    BANKGROUP_LEVEL_STAGGERED,
     SIZE 
 };
 
@@ -86,6 +87,7 @@ class Config {
     int tRFCb;
     int tREFI;
     int tREFIb;
+    int tREFIbg;
     int tFAW;
     int tRPRE;  // read preamble and write preamble are important
     int tWPRE;
@@ -142,6 +144,7 @@ class Config {
     std::string json_stats_name;
     std::string json_epoch_name;
     std::string txt_stats_name;
+    bool print_status;
 
     // Computed parameters
     int request_size_bytes;

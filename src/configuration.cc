@@ -177,6 +177,7 @@ void Config::InitOtherParams() {
     json_stats_name = output_prefix + ".json";
     json_epoch_name = output_prefix + "epoch.json";
     txt_stats_name = output_prefix + ".txt";
+    print_status = reader.GetBoolean("other", "print_status", false);
     return;
 }
 
@@ -234,6 +235,8 @@ void Config::InitSystemParams() {
         refresh_policy = RefreshPolicy::RANK_LEVEL_STAGGERED;
     } else if (ref_policy == "BANK_LEVEL_STAGGERED") {
         refresh_policy = RefreshPolicy::BANK_LEVEL_STAGGERED;
+    } else if (ref_policy == "BANKGROUP_LEVEL_STAGGERED") {
+        refresh_policy = RefreshPolicy::BANKGROUP_LEVEL_STAGGERED;
     } else {
         AbruptExit(__FILE__, __LINE__);
     }
@@ -322,6 +325,7 @@ void Config::InitTimingParams() {
     tRFCb = GetInteger("timing", "tRFCb", 20);
     tREFI = GetInteger("timing", "tREFI", 7800);
     tREFIb = GetInteger("timing", "tREFIb", 1950);
+    tREFIbg = GetInteger("timing", "tREFIbg", 3900);
     tFAW = GetInteger("timing", "tFAW", 50);
     tRPRE = GetInteger("timing", "tRPRE", 1);
     tWPRE = GetInteger("timing", "tWPRE", 1);
