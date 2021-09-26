@@ -1,3 +1,4 @@
+#include <iostream>
 #include "channel_state.h"
 
 namespace dramsim3 {
@@ -355,6 +356,12 @@ bool ChannelState::Is32AWReady(int rank, uint64_t curr_time) const {
         }
     }
     return true;
+}
+
+void ChannelState::print(int rank, int bankgroup, int bank) {
+    std::cout << "r: " << rank << " bg: " << bankgroup << " b: " << bank;
+    std::cout << " | ";
+    bank_states_[rank][bankgroup][bank].print();
 }
 
 }  // namespace dramsim3

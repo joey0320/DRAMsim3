@@ -26,6 +26,7 @@ class CommandQueue {
     bool QueueEmpty() const;
     int QueueUsage() const;
     std::vector<bool> rank_q_empty;
+    void print(int rank, int bankgroup, int bank);
 
    private:
     bool ArbitratePrecharge(const CMDIterator& cmd_it,

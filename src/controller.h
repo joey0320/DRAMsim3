@@ -34,6 +34,7 @@ class Controller {
     // Stats output
     void PrintEpochStats();
     void PrintFinalStats();
+    void print();
     void ResetStats() { simple_stats_.Reset(); }
     std::pair<uint64_t, int> ReturnDoneTrans(uint64_t clock);
 

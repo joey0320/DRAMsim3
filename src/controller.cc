@@ -63,6 +63,10 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
 }
 
 void Controller::ClockTick() {
+    if (config_.print_status) {
+      print();
+    }
+
     // update refresh counter
     refresh_.ClockTick();
 
@@ -345,6 +349,17 @@ void Controller::UpdateCommandStats(const Command &cmd) {
         default:
             AbruptExit(__FILE__, __LINE__);
     }
+}
+
+void Controller::print() {
+  for (int i = 0; i < config_.ranks; i++) {
+    for (int j= 0; j < config_.bankgroups; j++) {
+      for (int k = 0; k < config_.banks_per_group; k++) {
+        channel_state_.print(i, j, k);
+        cmd_queue_.print(i, j, k);
+      }
+    }
+  }
 }
 
 }  // namespace dramsim3

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "bankstate.h"
 
 namespace dramsim3 {
@@ -173,6 +174,10 @@ void BankState::UpdateTiming(CommandType cmd_type, uint64_t time) {
     cmd_timing_[static_cast<int>(cmd_type)] =
         std::max(cmd_timing_[static_cast<int>(cmd_type)], time);
     return;
+}
+
+void BankState::print() {
+  std::cout << "st: " << static_cast<int>(state_) << std::endl;
 }
 
 }  // namespace dramsim3

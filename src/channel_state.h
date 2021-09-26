@@ -35,6 +35,7 @@ class ChannelState {
     int RowHitCount(int rank, int bankgroup, int bank) const {
         return bank_states_[rank][bankgroup][bank].RowHitCount();
     };
+    void print(int rank, int bankgroup, int bank);
 
     std::vector<int> rank_idle_cycles;
 

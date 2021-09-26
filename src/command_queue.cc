@@ -1,3 +1,5 @@
+#include <cassert>
+#include <iostream>
 #include "command_queue.h"
 
 namespace dramsim3 {
@@ -238,6 +240,15 @@ bool CommandQueue::HasRWDependency(const CMDIterator& cmd_it,
         }
     }
     return false;
+}
+
+void CommandQueue::print(int rank, int bankgroup, int bank) {
+    int index = GetQueueIndex(rank, bankgroup, bank);
+    auto &cmd_q = queues_[index];
+    for (auto cmd : cmd_q) {
+      std::cout << static_cast<int>(cmd.cmd_type) << " ";
+    }
+    std::cout << std::endl;
 }
 
 }  // namespace dramsim3
