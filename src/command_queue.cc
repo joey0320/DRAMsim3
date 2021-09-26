@@ -123,7 +123,6 @@ bool CommandQueue::QueueEmpty() const {
     return true;
 }
 
-
 bool CommandQueue::AddCommand(Command cmd) {
     auto& queue = GetQueue(cmd.Rank(), cmd.Bankgroup(), cmd.Bank());
     if (queue.size() < queue_size_) {
@@ -154,7 +153,19 @@ void CommandQueue::GetRefQIndices(const Command& ref) {
         } else {
             ref_q_indices_.insert(ref.Rank());
         }
-    } else {  // refb
+    } else if (ref.cmd_type == CommandType::REFRESH_BANKGROUP) {
+        if (queue_structure_ == QueueStructure::PER_BANK) {
+            for (int i = 0; i < num_queues_; i++) {
+                if (i / config_.banks == ref.Rank() && 
+                    i % config_.bankgroups == ref.Bank()) {
+                    ref_q_indices_.insert(i);
+                }
+            }
+        } else {
+          assert(0);
+        }
+    }
+    else {  // refb
         int idx = GetQueueIndex(ref.Rank(), ref.Bankgroup(), ref.Bank());
         ref_q_indices_.insert(idx);
     }

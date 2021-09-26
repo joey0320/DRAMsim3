@@ -34,6 +34,7 @@ SimpleStats::SimpleStats(const Config& config, int channel_id)
     InitStat("num_ondemand_pres", "counter", "Number of ondemend PRE commands");
     InitStat("num_ref_cmds", "counter", "Number of REF commands");
     InitStat("num_refb_cmds", "counter", "Number of REFb commands");
+    InitStat("num_refbg_cmds", "counter", "Number of REFbg commands");
     InitStat("num_srefe_cmds", "counter", "Number of SREFE commands");
     InitStat("num_srefx_cmds", "counter", "Number of SREFX commands");
     InitStat("hbm_dual_cmds", "counter", "Number of cycles dual cmds issued");
@@ -375,6 +376,9 @@ void SimpleStats::UpdateEpochStats() {
         epoch_counters_["num_ref_cmds"] * config_.ref_energy_inc;
     doubles_["refb_energy"] =
         epoch_counters_["num_refb_cmds"] * config_.refb_energy_inc;
+    // TODO : Add refbg_enery_inc
+    doubles_["refbg_energy"] =
+        epoch_counters_["num_refbg_cmds"] * config_.refb_energy_inc;
 
     // vector doubles, update first, then push
     double background_energy = 0.0;
@@ -435,6 +439,9 @@ void SimpleStats::UpdateFinalStats() {
     doubles_["ref_energy"] = counters_["num_ref_cmds"] * config_.ref_energy_inc;
     doubles_["refb_energy"] =
         counters_["num_refb_cmds"] * config_.refb_energy_inc;
+    // TODO : Add refbg_enery_inc
+    doubles_["refbg_energy"] =
+        counters_["num_refbg_cmds"] * config_.refb_energy_inc;
 
     // vector doubles, update first, then push
     double background_energy = 0.0;

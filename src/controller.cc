@@ -330,6 +330,9 @@ void Controller::UpdateCommandStats(const Command &cmd) {
         case CommandType::REFRESH:
             simple_stats_.Increment("num_ref_cmds");
             break;
+        case CommandType::REFRESH_BANKGROUP:
+            simple_stats_.Increment("num_refbg_cmds");
+            break;
         case CommandType::REFRESH_BANK:
             simple_stats_.Increment("num_refb_cmds");
             break;

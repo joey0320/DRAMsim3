@@ -133,6 +133,7 @@ Timing::Timing(const Config& config)
             {CommandType::ACTIVATE, readp_to_act},
             {CommandType::REFRESH, read_to_activate},
             {CommandType::REFRESH_BANK, read_to_activate},
+            {CommandType::REFRESH_BANKGROUP, read_to_activate},
             {CommandType::SREF_ENTER, read_to_activate}};
     other_banks_same_bankgroup[static_cast<int>(CommandType::READ_PRECHARGE)] =
         std::vector<std::pair<CommandType, int> >{
@@ -159,6 +160,7 @@ Timing::Timing(const Config& config)
             {CommandType::ACTIVATE, write_to_activate},
             {CommandType::REFRESH, write_to_activate},
             {CommandType::REFRESH_BANK, write_to_activate},
+            {CommandType::REFRESH_BANKGROUP, write_to_activate},
             {CommandType::SREF_ENTER, write_to_activate}};
     other_banks_same_bankgroup[static_cast<int>(CommandType::WRITE_PRECHARGE)] =
         std::vector<std::pair<CommandType, int> >{
@@ -193,12 +195,15 @@ Timing::Timing(const Config& config)
     other_banks_same_bankgroup[static_cast<int>(CommandType::ACTIVATE)] =
         std::vector<std::pair<CommandType, int> >{
             {CommandType::ACTIVATE, activate_to_activate_l},
-            {CommandType::REFRESH_BANK, activate_to_refresh}};
+            {CommandType::REFRESH_BANK, activate_to_refresh},
+            {CommandType::REFRESH_BANKGROUP, activate_to_refresh}};
 
+    // FIXME : Not sure if REFRESH_BANKGROUP should be included here
     other_bankgroups_same_rank[static_cast<int>(CommandType::ACTIVATE)] =
         std::vector<std::pair<CommandType, int> >{
             {CommandType::ACTIVATE, activate_to_activate_s},
-            {CommandType::REFRESH_BANK, activate_to_refresh}};
+            {CommandType::REFRESH_BANK, activate_to_refresh},
+            {CommandType::REFRESH_BANKGROUP, activate_to_refresh}};
 
     // command PRECHARGE
     same_bank[static_cast<int>(CommandType::PRECHARGE)] =
@@ -206,6 +211,7 @@ Timing::Timing(const Config& config)
             {CommandType::ACTIVATE, precharge_to_activate},
             {CommandType::REFRESH, precharge_to_activate},
             {CommandType::REFRESH_BANK, precharge_to_activate},
+            {CommandType::REFRESH_BANKGROUP, precharge_to_activate},
             {CommandType::SREF_ENTER, precharge_to_activate}};
 
     // for those who need tPPD
@@ -241,6 +247,20 @@ Timing::Timing(const Config& config)
             {CommandType::REFRESH_BANK, refresh_to_refresh},
         };
 
+    // command REFRESH_BANKGROUP
+    same_rank[static_cast<int>(CommandType::REFRESH_BANKGROUP)] =
+        std::vector<std::pair<CommandType, int> >{
+            {CommandType::ACTIVATE, refresh_to_activate_bank},
+            {CommandType::REFRESH, refresh_to_activate_bank},
+            {CommandType::REFRESH_BANKGROUP, refresh_to_activate_bank},
+            {CommandType::SREF_ENTER, refresh_to_activate_bank}};
+
+    other_banks_same_bankgroup[static_cast<int>(CommandType::REFRESH_BANK)] =
+        std::vector<std::pair<CommandType, int> >{
+            {CommandType::ACTIVATE, refresh_to_activate},
+            {CommandType::REFRESH_BANK, refresh_to_refresh},
+        };
+
     // REFRESH, SREF_ENTER and SREF_EXIT are isued to the entire
     // rank  command REFRESH
     same_rank[static_cast<int>(CommandType::REFRESH)] =
@@ -261,6 +281,7 @@ Timing::Timing(const Config& config)
             {CommandType::ACTIVATE, self_refresh_exit},
             {CommandType::REFRESH, self_refresh_exit},
             {CommandType::REFRESH_BANK, self_refresh_exit},
+            {CommandType::REFRESH_BANKGROUP, self_refresh_exit},
             {CommandType::SREF_ENTER, self_refresh_exit}};
 }
 

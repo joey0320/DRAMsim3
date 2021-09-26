@@ -58,6 +58,21 @@ void ChannelState::BankNeedRefresh(int rank, int bankgroup, int bank,
     return;
 }
 
+void ChannelState::BankGroupNeedRefresh(int rank, int bank, bool need) {
+    if (need) {
+        Address addr = Address(-1, rank, -1, bank, -1, -1);
+        refresh_q_.emplace_back(CommandType::REFRESH_BANKGROUP, addr, -1);
+    } else {
+        for (auto it = refresh_q_.begin(); it != refresh_q_.end(); it++) {
+            if (it->Rank() == rank && it->Bank() == bank) {
+                refresh_q_.erase(it);
+                break;
+            }
+        }
+    }
+    return;
+}
+
 void ChannelState::RankNeedRefresh(int rank, bool need) {
     if (need) {
         Address addr = Address(-1, rank, -1, -1, -1, -1);
@@ -99,6 +114,27 @@ Command ChannelState::GetReadyCommand(const Command& cmd, uint64_t clk) const {
         } else {
             return Command();
         }
+    } else if (cmd.IsBankGroupCMD()) {
+        int num_ready = 0;
+        for (auto j = 0; j < config_.bankgroups; j++) {
+          ready_cmd = 
+              bank_states_[cmd.Rank()][j][cmd.Bank()].GetReadyCommand(cmd, clk);
+          if (!ready_cmd.IsValid()) {
+            continue;
+          }
+          if (ready_cmd.cmd_type != cmd.cmd_type) {
+            Address new_addr = Address(-1, cmd.Rank(), j, cmd.Bank(), -1, -1);
+            ready_cmd.addr = new_addr;
+            return ready_cmd;
+          } else {
+            num_ready++;
+          }
+        }
+        if (num_ready == config_.bankgroups) {
+          return ready_cmd;
+        } else {
+          return Command();
+        }
     } else {
         ready_cmd = bank_states_[cmd.Rank()][cmd.Bankgroup()][cmd.Bank()]
                         .GetReadyCommand(cmd, clk);
@@ -128,6 +164,13 @@ void ChannelState::UpdateState(const Command& cmd) {
         } else if (cmd.cmd_type == CommandType::SREF_EXIT) {
             rank_is_sref_[cmd.Rank()] = false;
         }
+    } else if (cmd.IsBankGroupCMD()) {
+        for (auto j = 0; j < config_.bankgroups; j++) {
+            bank_states_[cmd.Rank()][j][cmd.Bank()].UpdateState(cmd);
+        }
+        if (cmd.IsRefresh()) {
+            BankGroupNeedRefresh(cmd.Rank(), cmd.Bank(), false);
+        }
     } else {
         bank_states_[cmd.Rank()][cmd.Bankgroup()][cmd.Bank()].UpdateState(cmd);
         if (cmd.IsRefresh()) {
@@ -147,6 +190,7 @@ void ChannelState::UpdateTiming(const Command& cmd, uint64_t clk) {
         case CommandType::WRITE_PRECHARGE:
         case CommandType::PRECHARGE:
         case CommandType::REFRESH_BANK:
+        case CommandType::REFRESH_BANKGROUP:
             // TODO - simulator speed? - Speciazlize which of the below
             // functions to call depending on the command type  Same Bank
             UpdateSameBankTiming(

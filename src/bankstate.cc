@@ -32,6 +32,7 @@ Command BankState::GetReadyCommand(const Command& cmd, uint64_t clk) const {
                     break;
                 case CommandType::REFRESH:
                 case CommandType::REFRESH_BANK:
+                case CommandType::REFRESH_BANKGROUP:
                 case CommandType::SREF_ENTER:
                     required_type = cmd.cmd_type;
                     break;
@@ -55,6 +56,7 @@ Command BankState::GetReadyCommand(const Command& cmd, uint64_t clk) const {
                     break;
                 case CommandType::REFRESH:
                 case CommandType::REFRESH_BANK:
+                case CommandType::REFRESH_BANKGROUP:
                 case CommandType::SREF_ENTER:
                     required_type = CommandType::PRECHARGE;
                     break;
@@ -111,6 +113,7 @@ void BankState::UpdateState(const Command& cmd) {
                 case CommandType::ACTIVATE:
                 case CommandType::REFRESH:
                 case CommandType::REFRESH_BANK:
+                case CommandType::REFRESH_BANKGROUP:
                 case CommandType::SREF_ENTER:
                 case CommandType::SREF_EXIT:
                 default:
@@ -121,6 +124,7 @@ void BankState::UpdateState(const Command& cmd) {
             switch (cmd.cmd_type) {
                 case CommandType::REFRESH:
                 case CommandType::REFRESH_BANK:
+                case CommandType::REFRESH_BANKGROUP:
                     break;
                 case CommandType::ACTIVATE:
                     state_ = State::OPEN;
@@ -153,6 +157,7 @@ void BankState::UpdateState(const Command& cmd) {
                 case CommandType::PRECHARGE:
                 case CommandType::REFRESH:
                 case CommandType::REFRESH_BANK:
+                case CommandType::REFRESH_BANKGROUP:
                 case CommandType::SREF_ENTER:
                 default:
                     AbruptExit(__FILE__, __LINE__);

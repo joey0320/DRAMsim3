@@ -59,6 +59,7 @@ enum class CommandType {
     ACTIVATE,
     PRECHARGE,
     REFRESH_BANK,
+    REFRESH_BANKGROUP,
     REFRESH,
     SREF_ENTER,
     SREF_EXIT,
@@ -74,7 +75,8 @@ struct Command {
     bool IsValid() const { return cmd_type != CommandType::SIZE; }
     bool IsRefresh() const {
         return cmd_type == CommandType::REFRESH ||
-               cmd_type == CommandType::REFRESH_BANK;
+               cmd_type == CommandType::REFRESH_BANK ||
+               cmd_type == CommandType::REFRESH_BANKGROUP;
     }
     bool IsRead() const {
         return cmd_type == CommandType::READ ||
@@ -85,6 +87,9 @@ struct Command {
                cmd_type == CommandType ::WRITE_PRECHARGE;
     }
     bool IsReadWrite() const { return IsRead() || IsWrite(); }
+    bool IsBankGroupCMD() const {
+        return cmd_type == CommandType::REFRESH_BANKGROUP;
+    }
     bool IsRankCMD() const {
         return cmd_type == CommandType::REFRESH ||
                cmd_type == CommandType::SREF_ENTER ||

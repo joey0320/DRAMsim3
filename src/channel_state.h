@@ -27,6 +27,7 @@ class ChannelState {
     bool IsRWPendingOnRef(const Command& cmd) const;
     const Command& PendingRefCommand() const {return refresh_q_.front(); }
     void BankNeedRefresh(int rank, int bankgroup, int bank, bool need);
+    void BankGroupNeedRefresh(int rank, int bank, bool need);
     void RankNeedRefresh(int rank, bool need);
     int OpenRow(int rank, int bankgroup, int bank) const {
         return bank_states_[rank][bankgroup][bank].OpenRow();

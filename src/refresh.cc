@@ -11,6 +11,8 @@ Refresh::Refresh(const Config &config, ChannelState &channel_state)
       next_bank_(0) {
     if (refresh_policy_ == RefreshPolicy::RANK_LEVEL_SIMULTANEOUS) {
         refresh_interval_ = config_.tREFI;
+    } else if (refresh_policy_ == RefreshPolicy::BANKGROUP_LEVEL_STAGGERED) {
+        refresh_interval_ = config_.tREFIbg;
     } else if (refresh_policy_ == RefreshPolicy::BANK_LEVEL_STAGGERED) {
         refresh_interval_ = config_.tREFIb;
     } else {  // default refresh scheme: RANK STAGGERED
@@ -44,6 +46,13 @@ void Refresh::InsertRefresh() {
             }
             IterateNext();
             break;
+        // Refresh a certain bank for all bankgroups within a rank
+        case RefreshPolicy::BANKGROUP_LEVEL_STAGGERED:
+            if (!channel_state_.IsRankSelfRefreshing(next_rank_)) {
+                channel_state_.BankGroupNeedRefresh(next_rank_, next_bank_, true);
+            }
+            IterateNext();
+            break;
         // Fully staggered per bank refresh
         case RefreshPolicy::BANK_LEVEL_STAGGERED:
             if (!channel_state_.IsRankSelfRefreshing(next_rank_)) {
@@ -63,6 +72,12 @@ void Refresh::IterateNext() {
     switch (refresh_policy_) {
         case RefreshPolicy::RANK_LEVEL_STAGGERED:
             next_rank_ = (next_rank_ + 1) % config_.ranks;
+            return;
+        case RefreshPolicy::BANKGROUP_LEVEL_STAGGERED:
+            next_bank_ = (next_bank_ + 1) % config_.banks_per_group;
+            if (next_bank_ == 0) {
+              next_rank_ = (next_rank_ + 1) % config_.ranks;
+            }
             return;
         case RefreshPolicy::BANK_LEVEL_STAGGERED:
             // Note - the order issuing bank refresh commands is static and
