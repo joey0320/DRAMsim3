@@ -1,16 +1,15 @@
 {
     "version": "0.2.0",
     "configurations": [
-    
-        
         {
             "name": "C++ Launch",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/build/dramsim3main",
-            "args": ["-c", "./../configs/ddr4_8G_x8_config.ini", "-n", "100000", "--trace-cpu", "--trace-file", "./../sample_trace.txt"],
-            "stopAtEntry": true,
-            "cwd": "${workspaceRoot}/build",
+            "args": ["-c", "./../configs/DDR5_16G_x8_config.ini", "-n", "100000", "--trace-cpu", "--trace-file", "./../sample_trace.txt"],
+            "miDebuggerServerAddress": "localhost:3021",
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
             "environment": [],
             "externalConsole": true,
             "linux": {

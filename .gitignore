@@ -48,3 +48,10 @@ release
 .vscode/
 
 out/
+.ccls-cache/
+*.swp
+*.nfs*
+tags
+.gdb_history
+brk.txt
+.cache/
