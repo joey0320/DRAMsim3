@@ -68,5 +68,7 @@ int main(int argc, const char **argv) {
 
     delete cpu;
 
+    std::cout << "[*] Simulation Exited Successfully" << std::endl;
+
     return 0;
 }
